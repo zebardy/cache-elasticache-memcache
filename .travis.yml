@@ -11,6 +11,7 @@ before_install:
   - perlbrew install-cpanm -f;  cpanm Carton
 install:
   - '(carton install) || cat ~/.cpanm/build.log'
+  - 'perl -MCPAN::Config 2>&1 1>/dev/null || (echo n;echo o conf prerequisites_policy follow;echo o conf commit)|cpan'
   - 'carton exec "perl Makefile.PL"'
 script:
   - 'make'
