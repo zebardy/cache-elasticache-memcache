@@ -2,6 +2,7 @@ package Cache::Elasticache::Memcache;
 
 use fields qw(config_endpoint servers);
 use Carp;
+use base 'Cache::Memcached::Fast';
 
 our $VERSION = '0.0.1';
 
@@ -15,6 +16,8 @@ sub new {
     croak "Either config_endpoint ot servers can be specifired, but not both" if (defined $args->{'config_endpoint'} && defined $args->{'servers'});
 
     $self->{'config_endpoint'} = $args->{'config_endpoint'};
+
+    $self->SUPER::new;
 
     return $self;
 }

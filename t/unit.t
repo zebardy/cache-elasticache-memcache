@@ -2,12 +2,24 @@ use Moo;
 use Test::More;
 use Test::Exception;
 use Test::Routini;
+use Sub::Override;
 
 use Cache::Elasticache::Memcache;
 
 has test_class => (
-    is => 'rw',
+    is => 'ro',
+    lazy => 1,
     default => 'Cache::Elasticache::Memcache'
+);
+
+has parent_overrides => (
+    is => 'ro',
+    default => sub {
+        my $overrides = Sub::Override->new()
+                                     ->replace('Cache::Memcached::Fast::new' , sub { my $class = shift; my @args = @_ })
+                                     ->replace('Cache::Memcached::Fast::DESTROY' , sub { });
+        return $overrides;
+    }
 );
 
 test "hello world" => sub {
