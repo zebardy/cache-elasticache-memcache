@@ -15,11 +15,22 @@ has test_class => (
 has parent_overrides => (
     is => 'ro',
     default => sub {
+        my $self = shift;
         my $overrides = Sub::Override->new()
-                                     ->replace('Cache::Memcached::Fast::new' , sub { my $class = shift; my @args = @_ })
+                                     ->replace('Cache::Memcached::Fast::new' , sub { my $object = shift; my @args = @_; $self->last_parent_object($object); $self->last_parent_args(\@args) })
                                      ->replace('Cache::Memcached::Fast::DESTROY' , sub { });
         return $overrides;
     }
+);
+
+has last_parent_object => (
+    is => 'rw',
+    default => undef
+);
+
+has last_parent_args => (
+    is => 'rw',
+    default => undef,
 );
 
 test "hello world" => sub {
@@ -37,6 +48,7 @@ test "accepts either config_endpoint or servers params but not both" => sub {
     isa_ok $self->test_class->new( config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' ), $self->test_class;
     is $self->test_class->new( config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' )->{'config_endpoint'}, 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211';
     isa_ok $self->test_class->new( servers => ['test'] ), $self->test_class;
+    is {@{$self->last_parent_args}}->{servers}->[0], 'test';
     dies_ok { $self->test_class->new( servers => ['test'], config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' ) };
 };
 

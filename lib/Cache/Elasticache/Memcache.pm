@@ -17,7 +17,7 @@ sub new {
 
     $self->{'config_endpoint'} = $args->{'config_endpoint'};
 
-    $self->SUPER::new;
+    $self->SUPER::new(%$args);
 
     return $self;
 }
