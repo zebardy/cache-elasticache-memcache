@@ -10,7 +10,9 @@ perl:
 before_install:
   - perlbrew install-cpanm -f;  cpanm Carton
 install:
-  - '(carton install && perl Makefile.PL) || cat ~/.cpanm/build.log'
+  - '(carton install) || cat ~/.cpanm/build.log'
+  - 'carton exec "perl Makefile.PL"'
 script:
-  - 'make && carton exec "prove -b -v"'
+  - 'make'
+  - 'carton exec "prove -b -v"'
 sudo: false
