@@ -14,6 +14,11 @@ test "hello world" => sub {
     ok defined $self->test_class->VERSION;
 };
 
+test "instantiation" => sub {
+    my $self = shift;
+    isa_ok $self->test_class->new(), $self->test_class;
+};
+
 run_me;
 done_testing;
 1;
