@@ -8,7 +8,7 @@ perl:
   - '5.10'
   - 5.8
 before_install:
-  - perlbrew install-cpanm -f;  cpanm carton
+  - perlbrew install-cpanm -f;  cpanm Carton
 install:
   - (carton install && perl Makefile.PL) || cat ~/.cpanm/build.log
 script:
