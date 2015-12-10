@@ -1,13 +1,20 @@
 package Cache::Elasticache::Memcache;
 
-use fields;
+use fields qw(config_endpoint servers);
+use Carp;
 
 our $VERSION = '0.0.1';
 
 sub new {
-    my $class = shift;
+    my Cache::Elasticache::Memcache $class = shift;
     my ($conf) = @_;
     my $self = fields::new($class);
+
+    my $args = (@_ == 1) ? shift : { @_ };  # hashref-ify args
+
+    croak "Either config_endpoint ot servers can be specifired, but not both" if (defined $args->{'config_endpoint'} && defined $args->{'servers'});
+
+    $self->{'config_endpoint'} = $args->{'config_endpoint'};
 
     return $self;
 }
