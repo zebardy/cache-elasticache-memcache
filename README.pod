@@ -1,5 +1,7 @@
 =pod
 
+=for HTML <a href="https://travis-ci.org/zebardy/cache-memcache-elasticache"><img src="https://travis-ci.org/zebardy/cache-memcache-elasticache.svg"></a>
+
 =head1 NAME
 
 Cache::Elasticache::Memcache - A wrapper for Cache::Memacache::Fast with support for AWS's auto reconfiguration mechanism
