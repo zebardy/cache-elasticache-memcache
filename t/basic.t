@@ -3,6 +3,7 @@ use Test::More;
 use Test::Exception;
 use Test::Routini;
 use Sub::Override;
+use Carp;
 
 use Cache::Elasticache::Memcache;
 
@@ -18,7 +19,8 @@ has parent_overrides => (
         my $self = shift;
         my $overrides = Sub::Override->new()
                                      ->replace('Cache::Memcached::Fast::new' , sub { my $object = shift; my @args = @_; $self->last_parent_object($object); $self->last_parent_args(\@args) })
-                                     ->replace('Cache::Memcached::Fast::DESTROY' , sub { });
+                                     ->replace('Cache::Memcached::Fast::DESTROY' , sub { })
+                                     ->replace('IO::Socket::INET::new', sub{ my $object = shift; my @args = @_; croak "config_endpoint:-".{@args}->{'PeerAddr'} });
         return $overrides;
     }
 );
@@ -45,11 +47,14 @@ test "instantiation" => sub {
 
 test "accepts either config_endpoint or servers params but not both" => sub {
     my $self = shift;
-    isa_ok $self->test_class->new( config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' ), $self->test_class;
-    is $self->test_class->new( config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' )->{'config_endpoint'}, 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211';
+#    isa_ok $self->test_class->new( config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' ), $self->test_class;
+#    is $self->test_class->new( config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' )->{'config_endpoint'}, 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211';
+    dies_ok { $self->test_class->new( config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' ) };
+    like $@, '/^config_endpoint:-test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211/';
     isa_ok $self->test_class->new( servers => ['test'] ), $self->test_class;
     is {@{$self->last_parent_args}}->{servers}->[0], 'test';
     dies_ok { $self->test_class->new( servers => ['test'], config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' ) };
+    like $@, '/Either config_endpoint ot servers can be specifired, but not both/';
 };
 
 run_me;
