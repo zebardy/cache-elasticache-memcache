@@ -80,6 +80,10 @@ sub _parseConfigResponse {
     return \@servers;
 }
 
+sub DESTROY {
+    my $self = shift;
+}
+
 __END__
 =pod
 
