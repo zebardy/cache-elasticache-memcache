@@ -52,9 +52,9 @@ test "accepts either config_endpoint or servers params but not both" => sub {
     dies_ok { $self->test_class->new( config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' ) };
     like $@, '/^config_endpoint:-test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211/';
     isa_ok $self->test_class->new( servers => ['test'] ), $self->test_class;
-    is {@{$self->last_parent_args}}->{servers}->[0], 'test';
+    is $self->last_parent_args->[0]->{servers}->[0], 'test';
     dies_ok { $self->test_class->new( servers => ['test'], config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' ) };
-    like $@, '/Either config_endpoint ot servers can be specifired, but not both/';
+    like $@, '/Either config_endpoint or servers can be specifired, but not both/';
 };
 
 run_me;

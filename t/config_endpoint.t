@@ -28,7 +28,7 @@ has parent_overrides => (
         my $mock = Test::MockObject->new();
         $mock->mock('autoflush', sub { return 1 });
         $mock->mock('send', sub { return 1 });
-        my $text = "CONFIG cluster 0 141\r\n12\nmycluster.0001.cache.amazonaws.com|10.112.21.1|11211 mycluster.0002.cache.amazonaws.com|10.112.21.2|11211 mycluster.0003.cache.amazonaws.com|10.112.21.3|11211\n\r\nEND\r\n";
+        my $text = "CONFIG cluster 0 141\r\n12\nmycluster.0001.cache.amazonaws.com|10.112.21.1|11211 mycluster.0002.cache.amazonaws.com|10.112.21.2|11211 mycluster.0003.cache.amazonaws.com|10.112.21.3|11211\n\r\nEND\r\nmycluster.0001.cache.amazonaws.com|10.112.21.1|11211\n\r\n";
         my @lines = unpack("(A16)*", $text);
         $mock->mock('getline', sub { return shift @lines });
         $mock->mock('close', sub { return 1 });
