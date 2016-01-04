@@ -32,6 +32,16 @@ has last_parent_args => (
     default => undef,
 );
 
+has config_lines => (
+    is => 'rw',
+    lazy => 1,
+    clearer => '_clear_config_lines',
+    default => sub {
+        my $text = "CONFIG cluster 0 141\r\n12\nmycluster.0001.cache.amazonaws.com|10.112.21.1|11211 mycluster.0002.cache.amazonaws.com|10.112.21.2|11211 mycluster.0003.cache.amazonaws.com|10.112.21.3|11211\n\r\nEND\r\nmycluster.0001.cache.amazonaws.com|10.112.21.4|11211\n\r\n";
+        return [unpack("(A16)*", $text)];
+    }
+);
+
 has parent_overrides => (
     is => 'ro',
     lazy => 1,
@@ -42,8 +52,8 @@ has parent_overrides => (
         my $mock = Test::MockObject->new();
         $mock->mock('autoflush', sub { return 1 });
         $mock->mock('send', sub { return 1 });
-        my $text = "CONFIG cluster 0 141\r\n12\nmycluster.0001.cache.amazonaws.com|10.112.21.1|11211 mycluster.0002.cache.amazonaws.com|10.112.21.2|11211 mycluster.0003.cache.amazonaws.com|10.112.21.3|11211\n\r\nEND\r\nmycluster.0001.cache.amazonaws.com|10.112.21.1|11211\n\r\n";
-        my @lines = unpack("(A16)*", $text);
+#        diag explain $self->config_lines;
+        my @lines = @{$self->config_lines};
         $mock->mock('getline', sub { return shift @lines });
         $mock->mock('close', sub { return 1 });
         my $overrides = Sub::Override->new()
@@ -72,6 +82,7 @@ has parent_overrides => (
 
 before run_test => sub {
     my $self = shift;
+    $self->_clear_config_lines;
     $self->reset_overrides;
 };
 
@@ -81,10 +92,26 @@ sub reset_overrides {
     $self->parent_overrides;
 }
 
-test "happy_path" => sub {
+test "get_servers_from_endpoint" => sub {
     my $self = shift;
     my $result = $self->test_class->getServersFromEndpoint($self->endpoint_location);
     cmp_deeply( $result, ['10.112.21.1:11211','10.112.21.2:11211', '10.112.21.3:11211'] );
+};
+
+test "get_servers_from_endpoint_split_END" => sub {
+    my $self = shift;
+    $self->config_lines(["\nmycluster.0001.cache.amazonaws.com|10.112.21.4|11211\n\r\n","E","ND\r\n"]);
+    $self->reset_overrides;
+    my $result = $self->test_class->getServersFromEndpoint($self->endpoint_location);
+    cmp_deeply( $result, ['10.112.21.4:11211'] );
+};
+
+test "get_servers_from_endpoint_timeout" => sub {
+    my $self = shift;
+    $self->config_lines(["\nmycluster.0001.cache.amazonaws.com|10.112.21.4|11211\n\r\n"]);
+    $self->reset_overrides;
+    my $result = $self->test_class->getServersFromEndpoint($self->endpoint_location);
+    cmp_deeply( $result, ['10.112.21.4:11211'] );
 };
 
 test "update_servers_no_change" => sub {
