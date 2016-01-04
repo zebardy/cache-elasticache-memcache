@@ -93,8 +93,11 @@ sub updateServers {
 
 sub _hasServerListChanged {
     my $self = shift;
-    my $server = shift;
+    my $servers = shift;
 #    print STDERR "AARON: _hasServerListChanged\n";
+
+#    print STDERR "AARON: ".scalar(@$servers)." - ".scalar(@{$self->{'servers'}})."\n";
+    return 1 unless(scalar(@$servers) == scalar(@{$self->{'servers'}}));
 
     foreach my $server (@$servers) {
         return 1 unless ( grep { $server eq $_ } @{$self->{'servers'}} );

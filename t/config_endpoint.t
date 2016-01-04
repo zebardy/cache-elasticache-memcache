@@ -93,6 +93,7 @@ test "update_servers_no_change" => sub {
     my $memd = $self->test_class->new(config_endpoint => $self->endpoint_location);
     my $original_update = $memd->{_last_update};
     my $original_servers = $memd->{servers};
+    my $original_memd_obj = $memd->{_memd};
     sleep 1;
 
     $self->reset_overrides;
@@ -100,12 +101,28 @@ test "update_servers_no_change" => sub {
 
     ok $original_update < $memd->{_last_update};
     cmp_deeply($original_servers, $memd->{servers});
+    cmp_ok($original_memd_obj, '==', $memd->{_memd});
 };
 
-#test "update_servers" => sub {
-#    my $self = shift;
-#
-#};
+test "update_servers" => sub {
+    my $self = shift;
+
+    my $memd = $self->test_class->new(config_endpoint => $self->endpoint_location);
+    my $original_update = $memd->{_last_update};
+    my $original_servers = $memd->{servers};
+    my $original_memd_obj = $memd->{_memd};
+    sleep 1;
+
+    $memd->{servers} = [ '10.112.21.1:11211' ];
+    ok !eq_deeply($original_servers, $memd->{servers});
+
+    $self->reset_overrides;
+    $memd->updateServers;
+
+    ok $original_update < $memd->{_last_update};
+    cmp_deeply($original_servers, $memd->{servers});
+    cmp_ok($original_memd_obj, '!=', $memd->{_memd});
+};
 
 run_me;
 done_testing;
