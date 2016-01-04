@@ -124,6 +124,51 @@ test "update_servers" => sub {
     cmp_ok($original_memd_obj, '!=', $memd->{_memd});
 };
 
+test "check_servers_within_update_period" => sub {
+    my $self = shift;
+
+    my $memd = $self->test_class->new(
+        config_endpoint => $self->endpoint_location,
+        update_period => 9999999,
+    );
+
+    my $original_update = $memd->{_last_update};
+    my $original_servers = $memd->{servers};
+    my $original_memd_obj = $memd->{_memd};
+    sleep 2;
+
+    $self->reset_overrides;
+    $memd->updateServers;
+
+    ok $original_update < $memd->{_last_update};
+    cmp_deeply($original_servers, $memd->{servers});
+    cmp_ok($original_memd_obj, '==', $memd->{_memd});
+};
+
+test "check_servers_outside_update_period" => sub {
+    my $self = shift;
+
+    my $memd = $self->test_class->new(
+        config_endpoint => $self->endpoint_location,
+        update_period => 1,
+    );
+
+    my $original_update = $memd->{_last_update};
+    my $original_servers = $memd->{servers};
+    my $original_memd_obj = $memd->{_memd};
+    sleep 2;
+
+    $memd->{servers} = [ '10.112.21.1:11211' ];
+    ok !eq_deeply($original_servers, $memd->{servers});
+
+    $self->reset_overrides;
+    $memd->updateServers;
+
+    ok $original_update < $memd->{_last_update};
+    cmp_deeply($original_servers, $memd->{servers});
+    cmp_ok($original_memd_obj, '!=', $memd->{_memd});
+};
+
 run_me;
 done_testing;
 1;

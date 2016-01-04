@@ -1,6 +1,5 @@
 package Cache::Elasticache::Memcache;
 
-#use fields qw(config_endpoint servers _parent _last_update _args update_period);
 use Carp;
 use IO::Socket::INET;
 use Cache::Memcached::Fast;
