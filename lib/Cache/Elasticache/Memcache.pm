@@ -54,7 +54,7 @@ sub replace {
 sub delete {
     my $self = shift;
     $self->checkServers;
-    return $self->{'_memd'}->replace(@_);
+    return $self->{'_memd'}->delete(@_);
 }
 
 sub checkServers {
