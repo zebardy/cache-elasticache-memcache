@@ -47,14 +47,17 @@ test "instantiation" => sub {
 
 test "accepts either config_endpoint or servers params but not both" => sub {
     my $self = shift;
-#    isa_ok $self->test_class->new( config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' ), $self->test_class;
-#    is $self->test_class->new( config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' )->{'config_endpoint'}, 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211';
     dies_ok { $self->test_class->new( config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' ) };
     like $@, '/^config_endpoint:-test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211/';
     isa_ok $self->test_class->new( servers => ['test'] ), $self->test_class;
     is $self->last_parent_args->[0]->{servers}->[0], 'test';
     dies_ok { $self->test_class->new( servers => ['test'], config_endpoint => 'test.lwgyhw.cfg.usw2.cache.amazonaws.com:11211' ) };
     like $@, '/Either config_endpoint or servers can be specifired, but not both/';
+};
+
+test "get" => sub {
+    my $self = shift;
+    is $self->test_class->new()->get('test'), "deadbeef";
 };
 
 run_me;

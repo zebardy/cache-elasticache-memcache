@@ -1,16 +1,15 @@
 package Cache::Elasticache::Memcache;
 
-use fields qw(config_endpoint servers _parent);
 use Carp;
 use IO::Socket::INET;
-use base 'Cache::Memcached::Fast';
+use Cache::Memcached::Fast;
 
 our $VERSION = '0.0.1';
 
 sub new {
     my Cache::Elasticache::Memcache $class = shift;
     my ($conf) = @_;
-    my $self = fields::new($class);
+    my $self = bless {}, $class;
 
     my $args = (@_ == 1) ? shift : { @_ };  # hashref-ify args
 
@@ -20,29 +19,29 @@ sub new {
 
     $args->{servers} = $class->getServersFromEndpoint($self->{'config_endpoint'}) if(defined $args->{'config_endpoint'});
 
-    $self->{'_parent'} = Cache::Memcached::Fast->new($args);
+    $self->{'_memd'} = Cache::Memcached::Fast->new($args);
 
     return $self;
 }
 
 sub get {
     my $self = shift;
-    return $self->{'_parent'}->get(@_);
+    return $self->{'_memd'}->get(@_);
 }
 
 sub set {
     my $self = shift;
-    return $self->{'_parent'}->set(@_);
+    return $self->{'_memd'}->set(@_);
 }
 
 sub replace {
     my $self = shift;
-    return $self->{'_parent'}->replace(@_);
+    return $self->{'_memd'}->replace(@_);
 }
 
 sub delete {
     my $self = shift;
-    return $self->{'_parent'}->delete(@_);
+    return $self->{'_memd'}->delete(@_);
 }
 
 sub getServersFromEndpoint {
@@ -78,10 +77,6 @@ sub _parseConfigResponse {
         }
     }
     return \@servers;
-}
-
-sub DESTROY {
-    my $self = shift;
 }
 
 __END__
