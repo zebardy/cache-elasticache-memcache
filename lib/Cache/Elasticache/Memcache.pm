@@ -1,5 +1,8 @@
 package Cache::Elasticache::Memcache;
 
+use strict;
+use warnings;
+
 =pod
 
 =head1 NAME
@@ -45,46 +48,22 @@ sub new {
     return $self;
 }
 
-sub get {
-    my $self = shift;
-    $self->checkServers;
-    return $self->{'_memd'}->get(@_);
-}
-
-sub set {
-    my $self = shift;
-    $self->checkServers;
-    return $self->{'_memd'}->set(@_);
-}
-
-sub replace {
-    my $self = shift;
-    $self->checkServers;
-    return $self->{'_memd'}->replace(@_);
-}
-
-sub delete {
-    my $self = shift;
-    $self->checkServers;
-    return $self->{'_memd'}->delete(@_);
-}
-
-=pod
-
-=head1 YET TO BE SUPPORTED METHODS
-
+my @methods = qw(
 enable_compress
 namespace
+set
 set_multi
 cas
 cas_multi
 add
 add_multi
+replace
 replace_multi
 append
 append_multi
 prepend
 prepend_multi
+get
 get_multi
 gets
 gets_multi
@@ -92,6 +71,7 @@ incr
 incr_multi
 decr
 decr_multi
+delete
 delete_multi
 touch
 touch_multi
@@ -99,12 +79,22 @@ flush_all
 nowait_push
 server_versions
 disconnect_all
+);
 
-=cut
+foreach my $method (@methods) {
+    my $method_name = "Cache::Elasticache::Memcache::$method";
+    no strict 'refs';
+    *$method_name = sub {
+        my $self = shift;
+        $self->checkServers;
+#        print STDERR "AARON: $method\n";
+        return $self->{'_memd'}->$method(@_);
+    };
+}
 
 sub checkServers {
     my $self = shift;
-    if ( defined $args->{'config_endpoint'} && (time - $self->{_last_update}) > $self->{update_period} ) {
+    if ( defined $self->{'config_endpoint'} && (time - $self->{_last_update}) > $self->{update_period} ) {
         $self->updateServers();
     }
 }
@@ -163,8 +153,10 @@ sub getServersFromEndpoint {
     my $count = 0;
     until ($data =~ m/END/) {
         my $line = $socket->getline();
-        $data .= $line;
-        push(@$lines, $line);
+        if (defined $line) {
+            $data .= $line;
+            push(@$lines, $line);
+        }
         $count++;
         last if ( $count == 30 );
     }
@@ -175,6 +167,7 @@ sub getServersFromEndpoint {
 sub _parseConfigResponse {
     my $class = shift;
     my $data = shift;
+    return [] unless (defined $data && scalar @$data);
     my $text = join('',@$data);
     my @response_lines = split(/[\r\n]+/,$text);
     my @servers = ();
@@ -190,6 +183,6 @@ sub _parseConfigResponse {
     return \@servers;
 }
 
+1;
 __END__
 
-1;

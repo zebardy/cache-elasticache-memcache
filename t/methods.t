@@ -93,14 +93,14 @@ test "methods" => sub {
     foreach my $method (@{$self->methods}) {
         subtest "Method: $method" => sub {
             #if ($self->test_class->can($method)) {
-            TODO: {
-                todo_skip "method $method not yet supported", 4 if (!$self->test_class->can($method));
+#            TODO: {
+#                todo_skip "method $method not yet supported", 4 if (!$self->test_class->can($method));
                 $memd->{servers} = 0;
                 ok !$self->mock_base_memd->called($method);
                 is $memd->$method('test'), 'deadbeef';
                 ok $self->mock_base_memd->called($method);
                 ok $memd->{servers};
-            }
+#            }
         }
     }
 };
