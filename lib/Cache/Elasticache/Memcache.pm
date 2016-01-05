@@ -1,11 +1,23 @@
 package Cache::Elasticache::Memcache;
 
+=pod
+
+=head1 NAME
+
+Cache::Elasticache::Memcache
+
+=head1 DESCRIPTION
+
+=head1 AUTHOR
+
+=cut
+
 use Carp;
 use IO::Socket::INET;
 use Cache::Memcached::Fast;
-use Data::Dumper::Names;
+#use Data::Dumper::Names;
 
-our $VERSION = '0.0.1';
+our $VERSION = '0.0.2';
 
 sub new {
     my Cache::Elasticache::Memcache $class = shift;
@@ -56,6 +68,39 @@ sub delete {
     $self->checkServers;
     return $self->{'_memd'}->delete(@_);
 }
+
+=pod
+
+=head1 YET TO BE SUPPORTED METHODS
+
+enable_compress
+namespace
+set_multi
+cas
+cas_multi
+add
+add_multi
+replace_multi
+append
+append_multi
+prepend
+prepend_multi
+get_multi
+gets
+gets_multi
+incr
+incr_multi
+decr
+decr_multi
+delete_multi
+touch
+touch_multi
+flush_all
+nowait_push
+server_versions
+disconnect_all
+
+=cut
 
 sub checkServers {
     my $self = shift;
@@ -146,16 +191,5 @@ sub _parseConfigResponse {
 }
 
 __END__
-=pod
-
-=head1 NAME
-
-Cache::Elasticache::Memcache
-
-=head1 DESCRIPTION
-
-=head1 AUTHOR
-
-=cut
 
 1;

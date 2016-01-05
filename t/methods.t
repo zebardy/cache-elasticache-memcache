@@ -20,77 +20,73 @@ has parent_overrides => (
         my $self = shift;
 
         my $mock_memd = Test::MockObject->new();
-        $mock_memd->mock('get', sub { return 'deadbeef' if ($_[1] eq 'test') });
-        $mock_memd->mock('set', sub { return 0 unless ($_[1] eq 'test' && $_[2] eq 'deadbeef') });
-        $mock_memd->mock('replace', sub { return 0 unless ($_[1] eq 'hello' && $_[2] eq 'deadbeef') });
-        $mock_memd->mock('delete', sub { return 0 unless ($_[1] eq 'test') });
-
-        my $mock_inet = Test::MockObject->new();
-        $mock_inet->mock('autoflush', sub { return 1 });
-        $mock_inet->mock('send', sub { return 1 });
-        my @lines = ("\nmycluster.0001.cache.amazonaws.com|10.112.21.4|11211\n\r\n","END\r\n");
-        $mock_inet->mock('getline', sub { return shift @lines });
-        $mock_inet->mock('close', sub { return 1 });
+        foreach my $method (@{$self->methods}) {
+            $mock_memd->mock($method, sub {return 'deadbeef' if ($_[1] eq 'test') });
+        }
 
         my $overrides = Sub::Override->new()
-                                     ->replace('Cache::Memcached::Fast::new' ,
-            sub {
-                my $object = shift;
-                my @args = @_;
-                $self->last_parent_object($object);
-                $self->last_parent_args(\@args);
-                return $mock_memd;
-            })
+                                     ->replace('Cache::Memcached::Fast::new' , sub { return $mock_memd })
                                      ->replace('Cache::Memcached::Fast::DESTROY' , sub { })
-                                     ->replace('IO::Socket::INET::new', sub{ my $object = shift; my @args = @_; return $mock_inet; });
+                                     ->replace($self->test_class.'::checkServers', sub { my $object = shift; $object->{servers} = 1 })
+                                     ->replace($self->test_class.'::getServersFromEndpoint', sub { return ['10.112.21.4:11211'] });
         return $overrides;
     }
 );
 
-has last_parent_object => (
-    is => 'rw',
-    default => undef
+has methods => (
+    is => 'ro',
+    default => sub {
+    return [qw(
+enable_compress
+namespace
+set
+set_multi
+cas
+cas_multi
+add
+add_multi
+replace
+replace_multi
+append
+append_multi
+prepend
+prepend_multi
+get
+get_multi
+gets
+gets_multi
+incr
+incr_multi
+decr
+decr_multi
+delete
+delete_multi
+touch
+touch_multi
+flush_all
+nowait_push
+server_versions
+disconnect_all
+)]
+    },
 );
 
-has last_parent_args => (
-    is => 'rw',
-    default => undef,
-);
-
-test "get" => sub {
+test "methods" => sub {
     my $self = shift;
     my $memd = $self->test_class->new(
         config_endpoint => 'dave',
-        update_period => 9999999,
     );
-    is $memd->get('test'), "deadbeef";
-};
-
-test "set" => sub {
-    my $self = shift;
-    my $memd = $self->test_class->new(
-        config_endpoint => 'dave',
-        update_period => 9999999,
-    );
-    ok $memd->set('test', "deadbeef");
-};
-
-test "replace" => sub {
-    my $self = shift;
-    my $memd = $self->test_class->new(
-        config_endpoint => 'dave',
-        update_period => 9999999,
-    );
-    ok $memd->replace('hello', "deadbeef");
-};
-
-test "delete" => sub {
-    my $self = shift;
-    my $memd = $self->test_class->new(
-        config_endpoint => 'dave',
-        update_period => 9999999,
-    );
-    ok $memd->delete('test');
+    foreach my $method (@{$self->methods}) {
+        subtest "Method: $method" => sub {
+            #if ($self->test_class->can($method)) {
+            TODO: {
+                todo_skip "method $method not yet supported", 2 if (!$self->test_class->can($method));
+                $memd->{servers} = 0;
+                is $memd->$method('test'), 'deadbeef';
+                ok $memd->{servers};
+            }
+        }
+    }
 };
 
 run_me;
