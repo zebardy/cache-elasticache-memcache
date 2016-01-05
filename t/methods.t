@@ -14,18 +14,27 @@ has test_class => (
     default => 'Cache::Elasticache::Memcache'
 );
 
+has mock_base_memd => (
+    is => 'ro',
+    lazy => 1,
+    clearer => '_clear_mock_base_memd',
+    default => sub {
+        my $self = shift;
+        my $mock_memd = Test::MockObject->new();
+        foreach my $method (@{$self->methods}) {
+            $mock_memd->mock($method, sub {return 'deadbeef' if ($_[1] eq 'test') });
+        }
+        return $mock_memd;
+    },
+);
+
 has parent_overrides => (
     is => 'ro',
     default => sub {
         my $self = shift;
 
-        my $mock_memd = Test::MockObject->new();
-        foreach my $method (@{$self->methods}) {
-            $mock_memd->mock($method, sub {return 'deadbeef' if ($_[1] eq 'test') });
-        }
-
         my $overrides = Sub::Override->new()
-                                     ->replace('Cache::Memcached::Fast::new' , sub { return $mock_memd })
+                                     ->replace('Cache::Memcached::Fast::new' , sub { return $self->mock_base_memd })
                                      ->replace('Cache::Memcached::Fast::DESTROY' , sub { })
                                      ->replace($self->test_class.'::checkServers', sub { my $object = shift; $object->{servers} = 1 })
                                      ->replace($self->test_class.'::getServersFromEndpoint', sub { return ['10.112.21.4:11211'] });
@@ -71,6 +80,11 @@ disconnect_all
     },
 );
 
+before run_test => sub {
+    my $self = shift;
+    $self->mock_base_memd->clear();
+};
+
 test "methods" => sub {
     my $self = shift;
     my $memd = $self->test_class->new(
@@ -80,9 +94,11 @@ test "methods" => sub {
         subtest "Method: $method" => sub {
             #if ($self->test_class->can($method)) {
             TODO: {
-                todo_skip "method $method not yet supported", 2 if (!$self->test_class->can($method));
+                todo_skip "method $method not yet supported", 4 if (!$self->test_class->can($method));
                 $memd->{servers} = 0;
+                ok !$self->mock_base_memd->called($method);
                 is $memd->$method('test'), 'deadbeef';
+                ok $self->mock_base_memd->called($method);
                 ok $memd->{servers};
             }
         }
