@@ -17,6 +17,7 @@ nytprof.out
 /pm_to_blib
 *.o
 *.bs
+*.tar.gz
 /_eumm/
 .perl-version
 cpanfile.snapshot
