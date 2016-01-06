@@ -3,7 +3,7 @@ use inc::Module::Install;
 
 name 'Cache-Elasticache-Memcache';
 all_from 'lib/Cache/Elasticache/Memcache.pm';
-readme_markdown_from_pod 'clean';
+readme_pod_from 'lib/Cache/Elasticache/Memcache.pm';
 auto_manifest;
 
 perl_version '5.008_001';
