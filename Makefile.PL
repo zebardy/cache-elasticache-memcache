@@ -1,8 +1,10 @@
 use inc::Module::Install;
-use Module::Install::CPANfile;
+#include 'Module::AutoInstall';
 
 name 'Cache-Elasticache-Memcache';
 all_from 'lib/Cache/Elasticache/Memcache.pm';
+readme_markdown_from_pod 'clean';
+auto_manifest;
 
 perl_version '5.008_001';
 

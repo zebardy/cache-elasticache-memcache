@@ -5,20 +5,43 @@ use warnings;
 
 =pod
 
+=begin html
+
+<p>
+    <a href="https://travis-ci.org/zebardy/cache-memcache-elasticache"><img src="https://travis-ci.org/zebardy/cache-memcache-elasticache.svg"></a>
+</p>
+
+=end html
+
 =head1 NAME
 
-Cache::Elasticache::Memcache
+Cache::Elasticache::Memcache - A wrapper for Cache::Memacache::Fast with support for AWS's auto reconfiguration mechanism
+
+=head1 SYNOPSIS
+
+    This library is under development at best it will not do anything harmful
+    DO NOT USE
 
 =head1 DESCRIPTION
 
+My attempt to have a perl memcache client able to make use of AWS elasticache reconfiguration. I may abandon this project, it might never work. However I'm going to see where I get to. Perhaps it might end up in something useful for others, atleast that is my hope!
+
 =head1 AUTHOR
+
+Aaron Moses
+
+=head1 COPYWRIGHT
+
+Copyright 2015 Aaron Moses.
+
+This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut
 
 use Carp;
 use IO::Socket::INET;
 use Cache::Memcached::Fast;
-#use Data::Dumper::Names;
 
 our $VERSION = '0.0.2';
 
@@ -28,12 +51,10 @@ sub new {
     my $self = bless {}, $class;
 
     my $args = (@_ == 1) ? shift : { @_ };  # hashref-ify args
-#    print STDERR "args - ".Dumper($args)."\n";
 
     croak "Either config_endpoint or servers can be specifired, but not both" if (defined $args->{'config_endpoint'} && defined $args->{'servers'});
 
     $self->{'config_endpoint'} = delete @{$args}{'config_endpoint'};
-#    print STDERR "config_endpoint: ".$self->{'config_endpoint'}."\n";
 
     $args->{servers} = $class->getServersFromEndpoint($self->{'config_endpoint'}) if(defined $self->{'config_endpoint'});
     $self->{_last_update} = time;
@@ -41,7 +62,6 @@ sub new {
     $self->{update_period} = $args->{update_period};
 
     $self->{'_args'} = $args;
-#    print STDERR "args - ".Dumper($args)."\n";
     $self->{_memd} = Cache::Memcached::Fast->new($args);
     $self->{servers} = $args->{servers};
 
@@ -87,7 +107,6 @@ foreach my $method (@methods) {
     *$method_name = sub {
         my $self = shift;
         $self->checkServers;
-#        print STDERR "AARON: $method\n";
         return $self->{'_memd'}->$method(@_);
     };
 }
@@ -107,30 +126,19 @@ sub updateServers {
     ## Cache::Memcached::Fast does not support updating the server list after creation
     ## Therefore we must create a new object.
 
-#    print STDERR "AARON: servers - ".Dumper($servers)."\n";
-#    return;
-
-
     if ( $self->_hasServerListChanged($servers) ) {
-#        print STDERR "AARON: server list has changed\n";
         $self->{_args}->{servers} = $servers;
         $self->{_memd} = Cache::Memcached::Fast->new($self->{'_args'});
     }
 
-#    print STDERR "AARON: updating state\n";
-
     $self->{servers} = $servers;
-#    print STDERR "AARON: servers - ".Dumper($servers)."\n";
     $self->{_last_update} = time;
-#    print STDERR "AARON: last_update - ".$self->{_last_update}."\n";
 }
 
 sub _hasServerListChanged {
     my $self = shift;
     my $servers = shift;
-#    print STDERR "AARON: _hasServerListChanged\n";
 
-#    print STDERR "AARON: ".scalar(@$servers)." - ".scalar(@{$self->{'servers'}})."\n";
     return 1 unless(scalar(@$servers) == scalar(@{$self->{'servers'}}));
 
     foreach my $server (@$servers) {
@@ -148,28 +156,25 @@ sub getServersFromEndpoint {
 
     $socket->autoflush(1);
     $socket->send("config get cluster\r\n");
-    my $lines = [''];
     my $data = "";
     my $count = 0;
     until ($data =~ m/END/) {
         my $line = $socket->getline();
         if (defined $line) {
             $data .= $line;
-            push(@$lines, $line);
         }
         $count++;
         last if ( $count == 30 );
     }
     $socket->close();
-    return $class->_parseConfigResponse($lines);
+    return $class->_parseConfigResponse($data);
 }
 
 sub _parseConfigResponse {
     my $class = shift;
     my $data = shift;
-    return [] unless (defined $data && scalar @$data);
-    my $text = join('',@$data);
-    my @response_lines = split(/[\r\n]+/,$text);
+    return [] unless (defined $data && $data ne '');
+    my @response_lines = split(/[\r\n]+/,$data);
     my @servers = ();
     my $node_regex = '([-.a-zA-Z0-9]+)\|(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\|(\d+)';
     foreach my $line (@response_lines) {

@@ -1,25 +1,27 @@
-=pod
+<div>
+    <p>
+        <a href="https://travis-ci.org/zebardy/cache-memcache-elasticache"><img src="https://travis-ci.org/zebardy/cache-memcache-elasticache.svg"></a>
+    </p>
+</div>
 
-=for HTML <a href="https://travis-ci.org/zebardy/cache-memcache-elasticache"><img src="https://travis-ci.org/zebardy/cache-memcache-elasticache.svg"></a>
-
-=head1 NAME
+# NAME
 
 Cache::Elasticache::Memcache - A wrapper for Cache::Memacache::Fast with support for AWS's auto reconfiguration mechanism
 
-=head1 SYNOPSIS
+# SYNOPSIS
 
     This library is under development at best it will not do anything harmful
     DO NOT USE
 
-=head1 DESCRIPTION
+# DESCRIPTION
 
 My attempt to have a perl memcache client able to make use of AWS elasticache reconfiguration. I may abandon this project, it might never work. However I'm going to see where I get to. Perhaps it might end up in something useful for others, atleast that is my hope!
 
-=head1 AUTHOR
+# AUTHOR
 
 Aaron Moses
 
-=head1 COPYWRIGHT
+# COPYWRIGHT
 
 Copyright 2015 Aaron Moses.
 

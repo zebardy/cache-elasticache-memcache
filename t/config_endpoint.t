@@ -6,7 +6,6 @@ use Sub::Override;
 use Carp;
 use Test::MockObject;
 use Test::Deep;
-use Data::Dumper::Names;
 
 use Cache::Elasticache::Memcache;
 
@@ -47,12 +46,10 @@ has parent_overrides => (
     lazy => 1,
     clearer => '_clear_parent_overrides',
     default => sub {
-#        print STDERR "AARON: setting up parent overides\n";
         my $self = shift;
         my $mock = Test::MockObject->new();
         $mock->mock('autoflush', sub { return 1 });
         $mock->mock('send', sub { return 1 });
-#        diag explain $self->config_lines;
         my @lines = @{$self->config_lines};
         $mock->mock('getline', sub { return shift @lines });
         $mock->mock('close', sub { return 1 });
