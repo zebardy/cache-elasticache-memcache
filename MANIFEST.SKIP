@@ -1,5 +1,6 @@
 ^\.git/
-^\local/
+^local/
+^maint/
 ^.gitignore$
 ^.perl-version$
 ^.travis.yml$
