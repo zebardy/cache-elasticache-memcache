@@ -19,6 +19,25 @@ Cache::Elasticache::Memcache - A wrapper for Cache::Memacache::Fast with support
 
 =head1 SYNOPSIS
 
+    use Cache::Memcache::Elasticache;
+
+    my $memd = new Cache::Memcache::Elasticache->new({
+        config_endpoint => '',
+        update_period => 180,
+        # All other options are passed on to Cache::Memcached::Fast
+        ...
+    });
+
+    # Will update the server list from the configuration endpoint
+    $memd->updateServers();
+
+    # Will update the serverlist from the configuration endpoint if the time since
+    # the last time the server list was checked is greater than the update period specified when the $memd object was created.
+    $memd->checkServers();
+
+    # Class method to retrieve a server list from a configuration endpoint.
+    Cache::Memcache::Elasticache->getServersFromEndpoint('');
+
     This library is under development at best it will not do anything harmful
     DO NOT USE
 
