@@ -22,7 +22,7 @@ Cache::Elasticache::Memcache - A wrapper for Cache::Memacache::Fast with support
     use Cache::Memcache::Elasticache;
 
     my $memd = new Cache::Memcache::Elasticache->new({
-        config_endpoint => '',
+        config_endpoint => 'foo.bar',
         update_period => 180,
         # All other options are passed on to Cache::Memcached::Fast
         ...
@@ -32,29 +32,21 @@ Cache::Elasticache::Memcache - A wrapper for Cache::Memacache::Fast with support
     $memd->updateServers();
 
     # Will update the serverlist from the configuration endpoint if the time since
-    # the last time the server list was checked is greater than the update period specified when the $memd object was created.
+    # the last time the server list was checked is greater than the update period
+    # specified when the $memd object was created.
     $memd->checkServers();
 
     # Class method to retrieve a server list from a configuration endpoint.
-    Cache::Memcache::Elasticache->getServersFromEndpoint('');
+    Cache::Memcache::Elasticache->getServersFromEndpoint('foo.bar');
 
-    This library is under development at best it will not do anything harmful
+    # All other supported methods are handled by Cache::Memcached::Fast
+
+    This library is currently under development at best it will not do anything harmful
     DO NOT USE
 
 =head1 DESCRIPTION
 
 My attempt to have a perl memcache client able to make use of AWS elasticache reconfiguration. I may abandon this project, it might never work. However I'm going to see where I get to. Perhaps it might end up in something useful for others, atleast that is my hope!
-
-=head1 AUTHOR
-
-Aaron Moses
-
-=head1 COPYWRIGHT
-
-Copyright 2015 Aaron Moses.
-
-This program is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
 
 =cut
 
@@ -63,6 +55,18 @@ use IO::Socket::INET;
 use Cache::Memcached::Fast;
 
 our $VERSION = '0.0.2';
+
+=pod
+
+=head1 CONSTRUCTOR
+
+    Cache::Elasticache::Memcache->new({
+        config_endpoint => 'foo.bar',
+        update_period => 180,
+        ...
+    })
+
+=cut
 
 sub new {
     my Cache::Elasticache::Memcache $class = shift;
@@ -209,4 +213,19 @@ sub _parseConfigResponse {
 
 1;
 __END__
+
+=pod
+
+=head1 AUTHOR
+
+Aaron Moses
+
+=head1 COPYWRIGHT
+
+Copyright 2015 Aaron Moses.
+
+This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
 
