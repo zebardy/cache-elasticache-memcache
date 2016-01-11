@@ -91,6 +91,12 @@ sub new {
     return $self;
 }
 
+=pod
+
+=head1 METHODS
+
+=cut
+
 my @methods = qw(
 enable_compress
 namespace
@@ -134,12 +140,46 @@ foreach my $method (@methods) {
     };
 }
 
+=pod
+
+=head2 checkServers
+
+    my $memd = Cache::Elasticache::Memcache->new({
+        config_endpoint => 'foo.bar'
+    })
+
+    ...
+
+    $memd->checkServers();
+
+Trigger the the server list to be updated if the time passed since the server list was last updated is greater than the update period (default 180 seconds).
+
+TODO: set default value.
+
+=cut
+
 sub checkServers {
     my $self = shift;
     if ( defined $self->{'config_endpoint'} && (time - $self->{_last_update}) > $self->{update_period} ) {
         $self->updateServers();
     }
 }
+
+=pod
+
+=head2 updateServers
+
+    my $memd = Cache::Elasticache::Memcache->new({
+        config_endpoint => 'foo.bar'
+    })
+
+    ...
+
+    $memd->updateServers();
+
+This method will update the server list regardles of how much time has passed since the server list was last checked.
+
+=cut
 
 sub updateServers {
     my $self = shift;
@@ -170,6 +210,18 @@ sub _hasServerListChanged {
 
     return 0;
 }
+
+=pod
+
+=head1 CLASS METHODS
+
+=head2 getServersFromEndpoint
+
+    Cache::Elasticache::Memcache->getserversFromEndpoint('foo.bar');
+
+This class method will retrieve the server list for a given configuration endpoint.
+
+=cut
 
 sub getServersFromEndpoint {
     my $class = shift;

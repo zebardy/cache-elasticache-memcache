@@ -61,6 +61,62 @@ My attempt to have a perl memcache client able to make use of AWS elasticache re
 
 =pod
 
+=head1 METHODS
+
+
+=cut
+
+=pod
+
+=head2 checkServers
+
+    my $memd = Cache::Elasticache::Memcache->new({
+        config_endpoint => 'foo.bar'
+    })
+
+    ...
+
+    $memd->checkServers();
+
+Trigger the the server list to be updated if the time passed since the server list was last updated is greater than the update period (default 180 seconds).
+
+TODO: set default value.
+
+
+=cut
+
+=pod
+
+=head2 updateServers
+
+    my $memd = Cache::Elasticache::Memcache->new({
+        config_endpoint => 'foo.bar'
+    })
+
+    ...
+
+    $memd->updateServers();
+
+This method will update the server list regardles of how much time has passed since the server list was last checked.
+
+
+=cut
+
+=pod
+
+=head1 CLASS METHODS
+
+=head2 getServersFromEndpoint
+
+    Cache::Elasticache::Memcache->getserversFromEndpoint('foo.bar');
+
+This class method will retrieve the server list for a given configuration endpoint.
+
+
+=cut
+
+=pod
+
 =head1 AUTHOR
 
 Aaron Moses
