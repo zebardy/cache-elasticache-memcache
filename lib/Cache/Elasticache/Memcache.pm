@@ -96,7 +96,7 @@ sub new {
     $args->{servers} = $class->getServersFromEndpoint($self->{'config_endpoint'}) if(defined $self->{'config_endpoint'});
     $self->{_last_update} = time;
 
-    $self->{update_period} = $args->{update_period};
+    $self->{update_period} = exists $args->{update_period} ? $args->{update_period} : 180;
 
     $self->{'_args'} = $args;
     $self->{_memd} = Cache::Memcached::Fast->new($args);
@@ -206,8 +206,6 @@ foreach my $method (@methods) {
     $memd->checkServers();
 
 Trigger the the server list to be updated if the time passed since the server list was last updated is greater than the update period (default 180 seconds).
-
-TODO: set default value.
 
 =cut
 

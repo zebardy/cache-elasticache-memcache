@@ -4,6 +4,7 @@ use Test::Exception;
 use Test::Routini;
 use Sub::Override;
 use Carp;
+use Test::MockObject;
 
 use Cache::Elasticache::Memcache;
 
@@ -13,14 +14,30 @@ has test_class => (
     default => 'Cache::Elasticache::Memcache'
 );
 
+has config_lines => (
+    is => 'rw',
+    lazy => 1,
+    clearer => '_clear_config_lines',
+    default => sub {
+        my $text = "CONFIG cluster 0 141\r\n12\nmycluster.0001.cache.amazonaws.com|10.112.21.1|11211 mycluster.0002.cache.amazonaws.com|10.112.21.2|11211 mycluster.0003.cache.amazonaws.com|10.112.21.3|11211\n\r\nEND\r\nmycluster.0001.cache.amazonaws.com|10.112.21.4|11211\n\r\n";
+        return [unpack("(A16)*", $text)];
+    }
+);
+
 has parent_overrides => (
     is => 'ro',
     default => sub {
         my $self = shift;
+        my $mock = Test::MockObject->new();
+        $mock->mock('autoflush', sub { return 1 });
+        $mock->mock('send', sub { return 1 });
+        my @lines = @{$self->config_lines};
+        $mock->mock('getline', sub { return shift @lines });
+        $mock->mock('close', sub { return 1 });
         my $overrides = Sub::Override->new()
                                      ->replace('Cache::Memcached::Fast::new' , sub { my $object = shift; my @args = @_; $self->last_parent_object($object); $self->last_parent_args(\@args) })
                                      ->replace('Cache::Memcached::Fast::DESTROY' , sub { })
-                                     ->replace('IO::Socket::INET::new', sub{ my $object = shift; my @args = @_; croak "config_endpoint:-".{@args}->{'PeerAddr'} });
+                                     ->replace('IO::Socket::INET::new', sub{ my $object = shift; my @args = @_; croak "config_endpoint:-".{@args}->{'PeerAddr'} unless {@args}->{'PeerAddr'} eq 'good:11211'; return $mock });
         return $overrides;
     }
 );
@@ -43,6 +60,12 @@ test "hello world" => sub {
 test "instantiation" => sub {
     my $self = shift;
     isa_ok $self->test_class->new(), $self->test_class;
+};
+
+test "update_period defaults to 180 seconds" => sub {
+    my $self = shift;
+    my $object = $self->test_class->new( config_endpoint => 'good:11211' );
+    is $object->{update_period}, 180;
 };
 
 test "accepts either config_endpoint or servers params but not both" => sub {
