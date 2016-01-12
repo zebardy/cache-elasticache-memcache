@@ -17,6 +17,10 @@ use warnings;
 
 Cache::Elasticache::Memcache - A wrapper for Cache::Memacached::Fast with support for AWS's auto reconfiguration mechanism
 
+=head1 VERSION
+
+0.0.2
+
 =head1 SYNOPSIS
 
     use Cache::Memcache::Elasticache;
@@ -65,6 +69,16 @@ our $VERSION = '0.0.2';
         update_period => 180,
         ...
     })
+
+=head2 Constructor parameters
+
+=head3 config_endpoint
+
+AWS elasticache memcached cluster config endpoint locatio
+
+=head3 update_period
+
+The minimum period to wait between updating the server list
 
 =cut
 
@@ -307,13 +321,27 @@ __END__
 
 =pod
 
+=head1 BUGS
+
+probably best if this is githubs issue system
+
+=head1 SEE ALSO
+
+Cache::Memcached::Fast -
+
+AWS Elasticache Memcached autodiscovery -
+
 =head1 AUTHOR
 
 Aaron Moses
 
+=head1 WARRANTY
+
+There's b<NONE>, neither explicit nor implied.
+
 =head1 COPYWRIGHT
 
-Copyright 2015 Aaron Moses.
+Copyright (C) 2015 Aaron Moses. All rights reserved
 
 This program is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
