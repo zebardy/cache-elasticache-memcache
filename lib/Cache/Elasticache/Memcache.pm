@@ -89,7 +89,8 @@ sub new {
 
     my $args = (@_ == 1) ? shift : { @_ };  # hashref-ify args
 
-    croak "Either config_endpoint or servers can be specifired, but not both" if (defined $args->{'config_endpoint'} && defined $args->{'servers'});
+    croak "config_endpoint must be speccified" if (!defined $args->{'config_endpoint'});
+    croak "servers is not a valid constructors parameter" if (defined $args->{'servers'});
 
     $self->{'config_endpoint'} = delete @{$args}{'config_endpoint'};
 
