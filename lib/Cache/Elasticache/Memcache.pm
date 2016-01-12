@@ -15,7 +15,7 @@ use warnings;
 
 =head1 NAME
 
-Cache::Elasticache::Memcache - A wrapper for Cache::Memacache::Fast with support for AWS's auto reconfiguration mechanism
+Cache::Elasticache::Memcache - A wrapper for Cache::Memacached::Fast with support for AWS's auto reconfiguration mechanism
 
 =head1 SYNOPSIS
 
@@ -94,6 +94,45 @@ sub new {
 =pod
 
 =head1 METHODS
+
+=cut
+
+=pod
+
+=head2 Supported Cache::Memcached::Fast methods
+
+These methods can be called on a Cache::Elasticache::Memcache object. The object will call checkServers, then the call will be passed on to the appropriate Cache::Memcached::Fast code. Please see the Cache::Memcached::Fast documentation for further details regarding these methods.
+
+    $memd->enable_compress($enable)
+    $memd->namespace($string)
+    $memd->set($key, $value)
+    $memd->set_multi([$key, $value],[$key, $value, $expiration_time])
+    $memd->cas($key, $cas, $value)
+    $memd->cas_multi([$key, $cas, $value],[$key, $cas, $value])
+    $memd->add($key, $value)
+    $memd->add_multi([$key, $value],[$key, $value])
+    $memd->replace($key, $value)
+    $memd->replace_multi([$key, $value],[$key, $value])
+    $memd->append($key, $value)
+    $memd->append_multi([$key, $value],[$key, $value])
+    $memd->prepend($key, $value)
+    $memd->prepend_multi([$key, $value],[$key, $value])
+    $memd->get($key)
+    $memd->get_multi(@keys)
+    $memd->gets($key)
+    $memd->gets_multi(@keys)
+    $memd->incr($key)
+    $memd->incr_multi(@keys)
+    $memd->decr($key)
+    $memd->decr_multi(@keys)
+    $memd->delete($key)
+    $memd->delete_multi(@keys)
+    $memd->touch($key, $expiration_time)
+    $memd->touch_multi([$key],[$key, $expiration_time])
+    $memd->flush_all($delay)
+    $memd->nowait_push()
+    $memd->server_versions()
+    $memd->disconnect_all()
 
 =cut
 
