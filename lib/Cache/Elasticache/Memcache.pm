@@ -15,7 +15,7 @@ use warnings;
 
 =head1 NAME
 
-Cache::Elasticache::Memcache - A wrapper for Cache::Memacached::Fast with support for AWS's auto reconfiguration mechanism
+Cache::Elasticache::Memcache - A wrapper for L<Cache::Memacached::Fast> with support for AWS's auto reconfiguration mechanism
 
 =head1 VERSION
 
@@ -45,12 +45,11 @@ Cache::Elasticache::Memcache - A wrapper for Cache::Memacached::Fast with suppor
 
     # All other supported methods are handled by Cache::Memcached::Fast
 
-    This library is currently under development at best it will not do anything harmful
-    DO NOT USE
+    #N.B. This library is currently under development
 
 =head1 DESCRIPTION
 
-My attempt to have a perl memcache client able to make use of AWS elasticache reconfiguration. I may abandon this project, it might never work. However I'm going to see where I get to. Perhaps it might end up in something useful for others, atleast that is my hope!
+A wrapper for L<Cache::Memacached::Fast> with support for AWS's auto reconfiguration mechanism. It makes use of an AWS elasticache memcached cluster's configuration endpoint to disctover the memcache servers in the cluster and periodically check the current server list to adapt to a changing cluster.
 
 =cut
 
@@ -72,13 +71,13 @@ our $VERSION = '0.0.2';
 
 =head2 Constructor parameters
 
-=head3 config_endpoint
+=item config_endpoint
 
-AWS elasticache memcached cluster config endpoint locatio
+AWS elasticache memcached cluster config endpoint location
 
-=head3 update_period
+=item update_period
 
-The minimum period to wait between updating the server list
+The minimum period (in seconds) to wait between updating the server list. Defaults to 180 seconds
 
 =cut
 
@@ -116,7 +115,7 @@ sub new {
 
 =head2 Supported Cache::Memcached::Fast methods
 
-These methods can be called on a Cache::Elasticache::Memcache object. The object will call checkServers, then the call will be passed on to the appropriate Cache::Memcached::Fast code. Please see the Cache::Memcached::Fast documentation for further details regarding these methods.
+These methods can be called on a Cache::Elasticache::Memcache object. The object will call checkServers, then the call will be passed on to the appropriate L<Cache::Memcached::Fast> code. Please see the L<Cache::Memcached::Fast> documentation for further details regarding these methods.
 
     $memd->enable_compress($enable)
     $memd->namespace($string)
@@ -196,7 +195,7 @@ foreach my $method (@methods) {
 
 =pod
 
-=head2 checkServers
+=item checkServers
 
     my $memd = Cache::Elasticache::Memcache->new({
         config_endpoint => 'foo.bar'
@@ -219,7 +218,7 @@ sub checkServers {
 
 =pod
 
-=head2 updateServers
+=item updateServers
 
     my $memd = Cache::Elasticache::Memcache->new({
         config_endpoint => 'foo.bar'
@@ -267,7 +266,7 @@ sub _hasServerListChanged {
 
 =head1 CLASS METHODS
 
-=head2 getServersFromEndpoint
+=item getServersFromEndpoint
 
     Cache::Elasticache::Memcache->getserversFromEndpoint('foo.bar');
 
@@ -322,13 +321,13 @@ __END__
 
 =head1 BUGS
 
-probably best if this is githubs issue system
+L<github issues|https://github.com/zebardy/cache-memcache-elasticache/issues>
 
 =head1 SEE ALSO
 
-Cache::Memcached::Fast -
+L<Cache::Memcached::Fast> - The undelying library used to communicate with memcached servers (apart from autodiscovery)
 
-AWS Elasticache Memcached autodiscovery -
+L<AWS Elasticache Memcached autodiscovery|http://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/AutoDiscovery.html> - AWS's documentation regarding elasticaches's mecached autodiscovery mechanism.
 
 =head1 AUTHOR
 
@@ -336,7 +335,7 @@ Aaron Moses
 
 =head1 WARRANTY
 
-There's b<NONE>, neither explicit nor implied.
+There's B<NONE>, neither explicit nor implied.
 
 =head1 COPYWRIGHT
 
