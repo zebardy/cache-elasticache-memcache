@@ -115,10 +115,6 @@ sub new {
 
 =over
 
-=cut
-
-=pod
-
 =item Supported Cache::Memcached::Fast methods
 
 These methods can be called on a Cache::Elasticache::Memcache object. The object will call checkServers, then the call will be passed on to the appropriate L<Cache::Memcached::Fast> code. Please see the L<Cache::Memcached::Fast> documentation for further details regarding these methods.
