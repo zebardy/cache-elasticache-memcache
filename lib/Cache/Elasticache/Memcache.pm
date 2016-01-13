@@ -17,10 +17,6 @@ use warnings;
 
 Cache::Elasticache::Memcache - A wrapper for L<Cache::Memacached::Fast> with support for AWS's auto reconfiguration mechanism
 
-=head1 VERSION
-
-0.0.2
-
 =head1 SYNOPSIS
 
     use Cache::Memcache::Elasticache;
@@ -57,7 +53,7 @@ use Carp;
 use IO::Socket::INET;
 use Cache::Memcached::Fast;
 
-our $VERSION = '0.0.2';
+our $VERSION = '0.0.3';
 
 =pod
 

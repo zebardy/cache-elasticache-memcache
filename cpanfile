@@ -10,6 +10,11 @@ on configure => sub {
     requires 'Module::Install::ReadmePodFromPod';
 };
 
+on develop => sub {
+    requires 'ShipIt';
+    requires 'CPAN::Uploader';
+};
+
 on test => sub {
     requires 'Test::Routini';
     requires 'Test::More';
