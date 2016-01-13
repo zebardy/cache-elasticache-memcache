@@ -71,6 +71,8 @@ our $VERSION = '0.0.2';
 
 =head2 Constructor parameters
 
+=over
+
 =item config_endpoint
 
 AWS elasticache memcached cluster config endpoint location
@@ -78,6 +80,8 @@ AWS elasticache memcached cluster config endpoint location
 =item update_period
 
 The minimum period (in seconds) to wait between updating the server list. Defaults to 180 seconds
+
+=back
 
 =cut
 
