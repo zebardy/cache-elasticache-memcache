@@ -45,7 +45,7 @@ Cache::Elasticache::Memcache - A wrapper for L<Cache::Memacached::Fast> with sup
 
     # All other supported methods are handled by Cache::Memcached::Fast
 
-    #N.B. This library is currently under development
+    # N.B. This library is currently under development
 
 =head1 DESCRIPTION
 
@@ -274,7 +274,7 @@ sub _hasServerListChanged {
 
 =item getServersFromEndpoint
 
-    Cache::Elasticache::Memcache->getserversFromEndpoint('foo.bar');
+    Cache::Elasticache::Memcache->getServersFromEndpoint('foo.bar');
 
 This class method will retrieve the server list for a given configuration endpoint.
 
