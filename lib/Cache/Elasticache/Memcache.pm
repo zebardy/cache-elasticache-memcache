@@ -109,11 +109,13 @@ sub new {
 
 =head1 METHODS
 
+=over
+
 =cut
 
 =pod
 
-=head2 Supported Cache::Memcached::Fast methods
+=item Supported Cache::Memcached::Fast methods
 
 These methods can be called on a Cache::Elasticache::Memcache object. The object will call checkServers, then the call will be passed on to the appropriate L<Cache::Memcached::Fast> code. Please see the L<Cache::Memcached::Fast> documentation for further details regarding these methods.
 
@@ -264,7 +266,11 @@ sub _hasServerListChanged {
 
 =pod
 
+=back
+
 =head1 CLASS METHODS
+
+=over
 
 =item getServersFromEndpoint
 
@@ -318,6 +324,8 @@ sub _parseConfigResponse {
 __END__
 
 =pod
+
+=back
 
 =head1 BUGS
 
