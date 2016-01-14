@@ -47,6 +47,10 @@ Cache::Elasticache::Memcache - A wrapper for L<Cache::Memacached::Fast> with sup
 
 A wrapper for L<Cache::Memacached::Fast> with support for AWS's auto reconfiguration mechanism. It makes use of an AWS elasticache memcached cluster's configuration endpoint to disctover the memcache servers in the cluster and periodically check the current server list to adapt to a changing cluster.
 
+=head1 UNDER DEVELOPMENT DISCALIMER
+
+N.B. This module is still under development. It should work, but things may change under the hood. I plan to imporove the resiliance with better timeout handling of communication when updating the server list. Also I'm investigating switching to Dist::Milla. I'm open to suggestions, ideas and pull requests.
+
 =cut
 
 use Carp;
@@ -279,7 +283,11 @@ This class method will retrieve the server list for a given configuration endpoi
 sub getServersFromEndpoint {
     my $class = shift;
     my $config_endpoint = shift;
-    # TODO: IO::Socket::IP has been suggested as being better maintained
+    # TODO: Use IO::Socket::Timeout to handle timing outsocke reads sensibly
+    # TODO: make use of "connect_timeout" (default 0.5s) and "io_timeout" (default 0.2s) constructor parameters
+    # my $args = shift;
+    # $connect_timeout = exists $args->{connect_timeout} ? $args->{connect_timeout} : $class::default_connect_timeout;
+    # $io_timeout = exists $args->{io_timeout} ? $args->{io_timeout} : $class::default_io_timeout;
     my $socket = IO::Socket::IP->new(PeerAddr => $config_endpoint, Timeout => 10, Proto => 'tcp');
     croak "Unable to connect to server: ".$config_endpoint." - $!" unless $socket;
 
@@ -288,7 +296,6 @@ sub getServersFromEndpoint {
     my $data = "";
     my $count = 0;
     until ($data =~ m/END/) {
-        # TODO: need to consider getline getting blocked
         my $line = $socket->getline();
         if (defined $line) {
             $data .= $line;
