@@ -1,4 +1,6 @@
 package Cache::Elasticache::Memcache;
+# Need to make the name consistent ...
+# Cache::Elasticache::Memcache vs Cache::Memcache::Elasticache
 
 use strict;
 use warnings;
@@ -56,6 +58,7 @@ My attempt to have a perl memcache client able to make use of AWS elasticache re
 
 use Carp;
 use IO::Socket::INET;
+# TODO: use IO::Socket::IP
 use Cache::Memcached::Fast;
 
 our $VERSION = '0.0.2';
@@ -83,7 +86,7 @@ The minimum period to wait between updating the server list
 =cut
 
 sub new {
-    my Cache::Elasticache::Memcache $class = shift;
+    my $class = shift;
     my ($conf) = @_;
     my $self = bless {}, $class;
 
@@ -278,6 +281,7 @@ This class method will retrieve the server list for a given configuration endpoi
 sub getServersFromEndpoint {
     my $class = shift;
     my $config_endpoint = shift;
+    # TODO: IO::Socket::IP has been suggested as being better maintained
     my $socket = IO::Socket::INET->new(PeerAddr => $config_endpoint, Timeout => 10, Proto => 'tcp');
     croak "Unable to connect to server: ".$config_endpoint." - $!" unless $socket;
 
@@ -286,6 +290,7 @@ sub getServersFromEndpoint {
     my $data = "";
     my $count = 0;
     until ($data =~ m/END/) {
+        # TODO: need to consider getline getting blocked
         my $line = $socket->getline();
         if (defined $line) {
             $data .= $line;
