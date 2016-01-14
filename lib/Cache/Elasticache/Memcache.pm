@@ -1,6 +1,4 @@
 package Cache::Elasticache::Memcache;
-# Need to make the name consistent ...
-# Cache::Elasticache::Memcache vs Cache::Memcache::Elasticache
 
 use strict;
 use warnings;
@@ -21,9 +19,9 @@ Cache::Elasticache::Memcache - A wrapper for L<Cache::Memacached::Fast> with sup
 
 =head1 SYNOPSIS
 
-    use Cache::Memcache::Elasticache;
+    use Cache::Elasticache::Memcache;
 
-    my $memd = new Cache::Memcache::Elasticache->new({
+    my $memd = new Cache::Elasticache::Memcache->new({
         config_endpoint => 'foo.bar',
         update_period => 180,
         # All other options are passed on to Cache::Memcached::Fast
@@ -39,7 +37,7 @@ Cache::Elasticache::Memcache - A wrapper for L<Cache::Memacached::Fast> with sup
     $memd->checkServers();
 
     # Class method to retrieve a server list from a configuration endpoint.
-    Cache::Memcache::Elasticache->getServersFromEndpoint('foo.bar');
+    Cache::Elasticache::Memcache->getServersFromEndpoint('foo.bar');
 
     # All other supported methods are handled by Cache::Memcached::Fast
 
@@ -330,7 +328,7 @@ __END__
 
 =head1 BUGS
 
-L<github issues|https://github.com/zebardy/cache-memcache-elasticache/issues>
+L<github issues|https://github.com/zebardy/cache-elasticache-memcache/issues>
 
 =head1 SEE ALSO
 

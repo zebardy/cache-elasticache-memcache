@@ -1,7 +1,7 @@
 ^\.git/
 ^local/
 ^maint/
-^.gitignore$
-^.perl-version$
-^.travis.yml$
-^cpanfile.snapshot$
+^\.gitignore$
+^\.perl-version$
+^\.travis\.yml$
+^cpanfile\.snapshot$

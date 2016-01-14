@@ -12,15 +12,11 @@
 
 Cache::Elasticache::Memcache - A wrapper for L<Cache::Memacached::Fast> with support for AWS's auto reconfiguration mechanism
 
-=head1 VERSION
-
-0.0.2
-
 =head1 SYNOPSIS
 
-    use Cache::Memcache::Elasticache;
+    use Cache::Elasticache::Memcache;
 
-    my $memd = new Cache::Memcache::Elasticache->new({
+    my $memd = new Cache::Elasticache::Memcache->new({
         config_endpoint => 'foo.bar',
         update_period => 180,
         # All other options are passed on to Cache::Memcached::Fast
@@ -36,7 +32,7 @@ Cache::Elasticache::Memcache - A wrapper for L<Cache::Memacached::Fast> with sup
     $memd->checkServers();
 
     # Class method to retrieve a server list from a configuration endpoint.
-    Cache::Memcache::Elasticache->getServersFromEndpoint('foo.bar');
+    Cache::Elasticache::Memcache->getServersFromEndpoint('foo.bar');
 
     # All other supported methods are handled by Cache::Memcached::Fast
 
@@ -177,7 +173,7 @@ This class method will retrieve the server list for a given configuration endpoi
 
 =head1 BUGS
 
-L<github issues|https://github.com/zebardy/cache-memcache-elasticache/issues>
+L<github issues|https://github.com/zebardy/cache-elasticache-memcache/issues>
 
 =head1 SEE ALSO
 
