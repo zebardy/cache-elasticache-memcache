@@ -1,5 +1,5 @@
 requires 'Cache::Memcached::Fast';
-requires 'IO::Socket::INET';
+requires 'IO::Socket::IP';
 requires 'Carp';
 
 on configure => sub {

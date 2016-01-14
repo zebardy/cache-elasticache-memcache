@@ -54,7 +54,7 @@ has parent_overrides => (
         $mock->mock('getline', sub { return shift @lines });
         $mock->mock('close', sub { return 1 });
         my $overrides = Sub::Override->new()
-                                     ->replace('IO::Socket::INET::new',
+                                     ->replace('IO::Socket::IP::new',
             sub{
                 my $object = shift;
                 my @args = @_;

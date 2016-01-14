@@ -37,7 +37,7 @@ has parent_overrides => (
         my $overrides = Sub::Override->new()
                                      ->replace('Cache::Memcached::Fast::new' , sub { my $object = shift; my @args = @_; $self->last_parent_object($object); $self->last_parent_args(\@args) })
                                      ->replace('Cache::Memcached::Fast::DESTROY' , sub { })
-                                     ->replace('IO::Socket::INET::new', sub{ my $object = shift; my @args = @_; croak "config_endpoint:-".{@args}->{'PeerAddr'} unless {@args}->{'PeerAddr'} eq 'good:11211'; return $mock });
+                                     ->replace('IO::Socket::IP::new', sub{ my $object = shift; my @args = @_; croak "config_endpoint:-".{@args}->{'PeerAddr'} unless {@args}->{'PeerAddr'} eq 'good:11211'; return $mock });
         return $overrides;
     }
 );

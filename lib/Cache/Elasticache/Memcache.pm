@@ -50,8 +50,7 @@ A wrapper for L<Cache::Memacached::Fast> with support for AWS's auto reconfigura
 =cut
 
 use Carp;
-use IO::Socket::INET;
-# TODO: use IO::Socket::IP
+use IO::Socket::IP;
 use Cache::Memcached::Fast;
 
 our $VERSION = '0.0.3';
@@ -281,7 +280,7 @@ sub getServersFromEndpoint {
     my $class = shift;
     my $config_endpoint = shift;
     # TODO: IO::Socket::IP has been suggested as being better maintained
-    my $socket = IO::Socket::INET->new(PeerAddr => $config_endpoint, Timeout => 10, Proto => 'tcp');
+    my $socket = IO::Socket::IP->new(PeerAddr => $config_endpoint, Timeout => 10, Proto => 'tcp');
     croak "Unable to connect to server: ".$config_endpoint." - $!" unless $socket;
 
     $socket->autoflush(1);
