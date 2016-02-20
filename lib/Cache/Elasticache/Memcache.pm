@@ -49,7 +49,7 @@ A wrapper for L<Cache::Memacached::Fast> with support for AWS's auto reconfigura
 
 =head1 UNDER DEVELOPMENT DISCALIMER
 
-N.B. This module is still under development. It should work, but things may change under the hood. I plan to imporove the resiliance with better timeout handling of communication when updating the server list. Also I'm investigating switching to Dist::Milla. I'm open to suggestions, ideas and pull requests.
+N.B. This module is still under development. It should work, but things may change under the hood. I plan to imporove the resiliance with better timeout handling of communication when updating the server list. I'm toying with the idea of making the server list lookup asyncronus, however that may add a level of complexity not worth the benefits. Also I'm investigating switching to Dist::Milla. I'm open to suggestions, ideas and pull requests.
 
 =cut
 
