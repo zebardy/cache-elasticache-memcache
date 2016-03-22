@@ -39,7 +39,7 @@ Cache::Elasticache::Memcache - A wrapper for L<Cache::Memacached::Fast> with sup
 
 =head1 DESCRIPTION
 
-A wrapper for L<Cache::Memacached::Fast> with support for AWS's auto reconfiguration mechanism. It makes use of an AWS elasticache memcached cluster's configuration endpoint to disctover the memcache servers in the cluster and periodically check the current server list to adapt to a changing cluster.
+A wrapper for L<Cache::Memacached::Fast> with support for AWS's auto reconfiguration mechanism. It makes use of an AWS elasticache memcached cluster's configuration endpoint to discover the memcache servers in the cluster and periodically check the current server list to adapt to a changing cluster.
 
 =head1 UNDER DEVELOPMENT DISCALIMER
 
