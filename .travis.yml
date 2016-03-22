@@ -13,8 +13,8 @@ before_install:
 install:
   - '(perl maint/carton_install_with_configuredeps.pl) || cat ~/.cpanm/build.log'
   - 'carton exec "perl -MCPAN::Config" 2>&1 1>/dev/null || (echo y;echo o conf prerequisites_policy follow;echo o conf commit)| carton exec "cpan"'
-  - 'carton exec "perl Makefile.PL"'
+  - 'carton exec "perl Build.PL"'
 script:
-  - 'make'
+  - 'Carton exec "./Build"'
   - 'carton exec "prove -b -v"'
 sudo: false

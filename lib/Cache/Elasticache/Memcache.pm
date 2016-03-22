@@ -5,13 +5,7 @@ use warnings;
 
 =pod
 
-=begin html
-
-<p>
-    <a href="https://travis-ci.org/zebardy/cache-memcache-elasticache"><img src="https://travis-ci.org/zebardy/cache-memcache-elasticache.svg"></a>
-</p>
-
-=end html
+=for HTML <a href="https://travis-ci.org/zebardy/cache-elasticache-memcache"><img src="https://travis-ci.org/zebardy/cache-elasticache-memcache.svg?branch=master"></a>
 
 =head1 NAME
 
@@ -350,12 +344,12 @@ Aaron Moses
 
 There's B<NONE>, neither explicit nor implied.
 
-=head1 COPYWRIGHT
+=head1 COPYRIGHT AND LICENCE
 
 Copyright (C) 2015 Aaron Moses. All rights reserved
 
 This program is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
+it under the same terms as Perl 5 itself.
 
 =cut
 

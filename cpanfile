@@ -2,17 +2,16 @@ requires 'Cache::Memcached::Fast';
 requires 'IO::Socket::IP';
 requires 'Carp';
 
-on configure => sub {
-    requires 'inc::Module::Install';
-    requires 'Module::Install::CPANfile';
-    requires 'Module::Install::Admin';
-    requires 'Module::Install::AutoManifest';
-    requires 'Module::Install::ReadmePodFromPod';
-};
+#on configure => sub {
+#    requires 'inc::Module::Install';
+#    requires 'Module::Install::CPANfile';
+#    requires 'Module::Install::Admin';
+#    requires 'Module::Install::AutoManifest';
+#    requires 'Module::Install::ReadmePodFromPod';
+#};
 
 on develop => sub {
-    requires 'ShipIt';
-    requires 'CPAN::Uploader';
+    requires 'Dist::Milla';
 };
 
 on test => sub {
