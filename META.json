@@ -39,7 +39,8 @@
          "requires" : {
             "Cache::Memcached::Fast" : "0",
             "Carp" : "0",
-            "IO::Socket::IP" : "0"
+            "IO::Socket::IP" : "0",
+            "perl" : "5.008008"
          }
       },
       "test" : {

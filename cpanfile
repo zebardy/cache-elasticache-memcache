@@ -1,3 +1,4 @@
+requires 'perl', '5.008008';
 requires 'Cache::Memcached::Fast';
 requires 'IO::Socket::IP';
 requires 'Carp';

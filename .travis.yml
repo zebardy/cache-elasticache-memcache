@@ -11,7 +11,8 @@ perl:
 before_install:
   - perlbrew install-cpanm -f;  cpanm Carton
 install:
-  - '(perl maint/carton_install_with_configuredeps.pl) || cat ~/.cpanm/build.log'
+#  - '(perl maint/carton_install_with_configuredeps.pl) || cat ~/.cpanm/build.log'
+  - 'cpanm -L local -nq --installdeps --with-recommends --with-suggests .'
   - 'carton exec "perl ./Build.PL"'
 script:
   - 'carton exec "./Build"'
