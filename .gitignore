@@ -23,3 +23,4 @@ nytprof.out
 cpanfile.snapshot
 /local/
 /Cache-Elasticache-Memcache-*
+/_build_params
