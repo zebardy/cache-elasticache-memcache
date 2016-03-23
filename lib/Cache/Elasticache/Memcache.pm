@@ -50,6 +50,8 @@ N.B. This module is still under development. It should work, but things may chan
 use Carp;
 use IO::Socket::IP;
 use Cache::Memcached::Fast;
+use Try::Tiny;
+use Scalar::Util qw(blessed);
 
 our $VERSION = '0.0.3';
 
@@ -91,7 +93,7 @@ sub new {
 
     $self->{'config_endpoint'} = delete @{$args}{'config_endpoint'};
 
-    $args->{servers} = $class->getServersFromEndpoint($self->{'config_endpoint'}) if(defined $self->{'config_endpoint'});
+    $args->{servers} = $self->getServersFromEndpoint($self->{'config_endpoint'}) if(defined $self->{'config_endpoint'});
     $self->{_last_update} = time;
 
     $self->{update_period} = exists $args->{update_period} ? $args->{update_period} : 180;
@@ -275,30 +277,52 @@ This class method will retrieve the server list for a given configuration endpoi
 =cut
 
 sub getServersFromEndpoint {
-    my $class = shift;
+    my $invoker = shift;
     my $config_endpoint = shift;
+    my $data = "";
     # TODO: Use IO::Socket::Timeout to handle timing outsocke reads sensibly
     # TODO: make use of "connect_timeout" (default 0.5s) and "io_timeout" (default 0.2s) constructor parameters
     # my $args = shift;
     # $connect_timeout = exists $args->{connect_timeout} ? $args->{connect_timeout} : $class::default_connect_timeout;
     # $io_timeout = exists $args->{io_timeout} ? $args->{io_timeout} : $class::default_io_timeout;
-    my $socket = IO::Socket::IP->new(PeerAddr => $config_endpoint, Timeout => 10, Proto => 'tcp');
-    croak "Unable to connect to server: ".$config_endpoint." - $!" unless $socket;
+    my $socket = (blessed($invoker)) ? $invoker->{_sockets}->{$config_endpoint} : undef;
 
-    $socket->autoflush(1);
-    $socket->send("config get cluster\r\n");
-    my $data = "";
-    my $count = 0;
-    until ($data =~ m/END/) {
-        my $line = $socket->getline();
-        if (defined $line) {
-            $data .= $line;
+    for my $i (0..2) {
+        unless (defined $socket && $socket->connected()) {
+            $socket = IO::Socket::IP->new(PeerAddr => $config_endpoint, Timeout => 10, Proto => 'tcp');
+            croak "Unable to connect to server: ".$config_endpoint." - $!" unless $socket;
+            $socket->sockopt(SO_KEEPALIVE,1);
+            $socket->autoflush(1);
         }
-        $count++;
-        last if ( $count == 30 );
+
+        try {
+            $socket->send("config get cluster\r\n");
+            my $count = 0;
+            until ($data =~ m/END/) {
+                my $line = $socket->getline();
+                if (defined $line) {
+                    $data .= $line;
+                }
+                $count++;
+                last if ( $count == 30 );
+            }
+        } catch {
+            $socket = undef;
+            no warnings 'exiting';
+            next;
+        };
+        if ($data ne "") {
+            last;
+        } else {
+            $socket = undef;
+        }
     }
-    $socket->close();
-    return $class->_parseConfigResponse($data);
+    if (blessed $invoker) {
+        $invoker->{_sockets}->{$config_endpoint} = $socket;
+    } else {
+        $socket->close() if (blessed $socket);
+    }
+    return $invoker->_parseConfigResponse($data);
 }
 
 sub _parseConfigResponse {
@@ -318,6 +342,16 @@ sub _parseConfigResponse {
     }
     return \@servers;
 }
+
+sub DESTROY {
+    my $self = shift;
+    foreach my $config_endpoint (keys %{$self->{_sockets}}) {
+        my $socket = $self->{_sockets}->{$config_endpoint};
+        if (defined $self->{_socket} && $socket->connected()) {
+            $self->{_socket}->close();
+        }
+    }
+};
 
 1;
 __END__

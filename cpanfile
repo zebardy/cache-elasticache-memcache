@@ -2,6 +2,7 @@ requires 'perl', '5.008008';
 requires 'Cache::Memcached::Fast';
 requires 'IO::Socket::IP';
 requires 'Carp';
+requires 'Try::Tiny';
 
 on develop => sub {
 #    requires 'Dist::Milla';

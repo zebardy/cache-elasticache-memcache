@@ -30,6 +30,7 @@ has parent_overrides => (
         my $self = shift;
         my $mock = Test::MockObject->new();
         $mock->mock('autoflush', sub { return 1 });
+        $mock->mock('sockopt', sub { return 1 });
         $mock->mock('send', sub { return 1 });
         my @lines = @{$self->config_lines};
         $mock->mock('getline', sub { return shift @lines });

@@ -40,6 +40,7 @@
             "Cache::Memcached::Fast" : "0",
             "Carp" : "0",
             "IO::Socket::IP" : "0",
+            "Try::Tiny" : "0",
             "perl" : "5.008008"
          }
       },

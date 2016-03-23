@@ -19,7 +19,8 @@ my %WriteMakefileArgs = (
   "PREREQ_PM" => {
     "Cache::Memcached::Fast" => 0,
     "Carp" => 0,
-    "IO::Socket::IP" => 0
+    "IO::Socket::IP" => 0,
+    "Try::Tiny" => 0
   },
   "TEST_REQUIRES" => {
     "Moo" => 0,
@@ -47,7 +48,8 @@ my %FallbackPrereqs = (
   "Test::Exception" => 0,
   "Test::MockObject" => 0,
   "Test::More" => 0,
-  "Test::Routini" => 0
+  "Test::Routini" => 0,
+  "Try::Tiny" => 0
 );
 
 
