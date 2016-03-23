@@ -3,9 +3,9 @@ requires 'Cache::Memcached::Fast';
 requires 'IO::Socket::IP';
 requires 'Carp';
 
-#on develop => sub {
+on develop => sub {
 #    requires 'Dist::Milla';
-#};
+};
 
 on test => sub {
     requires 'Test::Routini';

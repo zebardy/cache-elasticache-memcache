@@ -14,8 +14,8 @@ install:
 #  - '(perl maint/carton_install_with_configuredeps.pl) || cat ~/.cpanm/build.log'
 #  - 'cpanm -L local -nq --installdeps --with-recommends --with-suggests .'
   - 'carton install'
-  - 'carton exec "perl ./Build.PL"'
+  - 'carton exec "perl ./Makefile.PL"'
 script:
-  - 'carton exec "./Build"'
+  - 'carton exec "make"'
   - 'carton exec "prove -b -v"'
 sudo: false
