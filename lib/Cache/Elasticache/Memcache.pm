@@ -251,11 +251,9 @@ sub _hasServerListChanged {
     my $self = shift;
     my $servers = shift;
 
-    return 1 unless(scalar(@$servers) == scalar(@{$self->{'servers'}}));
+    return 1 unless (scalar(@$servers) == scalar(@{$self->{'servers'}}));
 
-    foreach my $server (@$servers) {
-        return 1 unless ( grep { $server eq $_ } @{$self->{'servers'}} );
-    }
+    return 1 unless (join('|',sort(@$servers)) eq join('|',sort(@{$self->{'servers'}})));
 
     return 0;
 }
