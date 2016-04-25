@@ -1,6 +1,7 @@
 requires 'perl', '5.008008';
 requires 'Cache::Memcached::Fast';
 requires 'IO::Socket::IP';
+requires 'IO::Socket::Timeout';
 requires 'Carp';
 requires 'Try::Tiny';
 

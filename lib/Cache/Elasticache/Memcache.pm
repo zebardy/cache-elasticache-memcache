@@ -49,6 +49,7 @@ N.B. This module is still under development. It should work, but things may chan
 
 use Carp;
 use IO::Socket::IP;
+use IO::Socket::Timeout;
 use Cache::Memcached::Fast;
 use Try::Tiny;
 use Scalar::Util qw(blessed);
@@ -209,8 +210,10 @@ Trigger the the server list to be updated if the time passed since the server li
 
 sub checkServers {
     my $self = shift;
-    if ( defined $self->{'config_endpoint'} && (time - $self->{_last_update}) > $self->{update_period} ) {
+    $self->{_current_update_period} = (defined $self->{_current_update_period}) ? $self->{_current_update_period}: $self->{update_period} - rand(10);
+    if ( defined $self->{'config_endpoint'} && (time - $self->{_last_update}) > $self->{_current_update_period} ) {
         $self->updateServers();
+        $self->{_current_update_period} = undef;
     }
 }
 
@@ -278,7 +281,6 @@ sub getServersFromEndpoint {
     my $invoker = shift;
     my $config_endpoint = shift;
     my $data = "";
-    # TODO: Use IO::Socket::Timeout to handle timing outsocke reads sensibly
     # TODO: make use of "connect_timeout" (default 0.5s) and "io_timeout" (default 0.2s) constructor parameters
     # my $args = shift;
     # $connect_timeout = exists $args->{connect_timeout} ? $args->{connect_timeout} : $class::default_connect_timeout;
@@ -291,6 +293,9 @@ sub getServersFromEndpoint {
             croak "Unable to connect to server: ".$config_endpoint." - $!" unless $socket;
             $socket->sockopt(SO_KEEPALIVE,1);
             $socket->autoflush(1);
+            IO::Socket::Timeout->enble_timeouts_on($socket);
+            $socket->read_timeout(0.5);
+            $socket->write_Timeout(0.5);
         }
 
         try {
