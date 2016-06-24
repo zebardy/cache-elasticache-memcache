@@ -6,6 +6,7 @@ use Sub::Override;
 use Carp;
 use Test::MockObject;
 use Test::Deep;
+use Symbol;
 
 use Cache::Elasticache::Memcache;
 
@@ -48,8 +49,8 @@ has mock_sockets => (
     default => sub {
         my $self = shift;
         return {
-            'good' => $self->build_mock_socket($self->config_lines),
-            'bad_send' => $self->build_mock_socket($self->config_lines, 'send' => sub { die; }),
+            'good' => $self->build_mock_socket($self->config_lines, qualify(\*x)),
+            'bad_send' => $self->build_mock_socket($self->config_lines,qualify(\*z), 'send' => sub { die; }),
         };
     }
 );
@@ -101,21 +102,24 @@ sub reset_overrides {
 sub build_mock_socket {
     my $self = shift;
     my $config_lines = shift;
+    my $glob = shift;
     my %args = @_;
 
-    my $default_behaviour = sub { return 1 };
-
-    my $scalar;
-    open(FH, "<", \$scalar);
-    my $mock = Test::MockObject->new(\*FH);
+    my $mock = Test::MockObject->new($glob);
     $mock->set_isa('IO::Socket');
     foreach my $method (qw(autoflush sockopt send close connected setsockopt write_Timeout)) {
-        $mock->mock($method, (exists $args{$method}) ? $args{$method} : $default_behaviour);
+        $mock->mock($method, (exists $args{$method}) ? $args{$method} : $self->default_mock_method($method));
     }
     my @lines = @{$config_lines};
     $mock->mock('getline', sub { return shift @lines });
 
    return $mock;
+}
+
+sub default_mock_method {
+    my $self = shift;
+    my $method_name = shift;
+    return sub { return 1 };
 }
 
 test "get_servers_from_endpoint" => sub {
