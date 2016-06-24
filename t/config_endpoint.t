@@ -49,8 +49,8 @@ has mock_sockets => (
     default => sub {
         my $self = shift;
         return {
-            'good' => $self->build_mock_socket($self->config_lines, qualify(\*x)),
-            'bad_send' => $self->build_mock_socket($self->config_lines,qualify(\*z), 'send' => sub { die; }),
+            'good' => $self->build_mock_socket($self->config_lines, gensym),
+            'bad_send' => $self->build_mock_socket($self->config_lines,gensym, 'send' => sub { die; }),
         };
     }
 );

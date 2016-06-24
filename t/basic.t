@@ -5,6 +5,7 @@ use Test::Routini;
 use Sub::Override;
 use Carp;
 use Test::MockObject;
+use Symbol;
 
 use Cache::Elasticache::Memcache;
 
@@ -28,9 +29,7 @@ has parent_overrides => (
     is => 'ro',
     default => sub {
         my $self = shift;
-        my $scalar;
-        open(FH, "<", \$scalar);
-        my $mock = Test::MockObject->new(\*FH);
+        my $mock = Test::MockObject->new(gensym);
         $mock->set_isa('IO::Socket');
         $mock->mock('autoflush', sub { return 1 });
         $mock->mock('sockopt', sub { return 1 });
