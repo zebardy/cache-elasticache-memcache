@@ -105,8 +105,11 @@ sub build_mock_socket {
 
     my $default_behaviour = sub { return 1 };
 
-    my $mock = Test::MockObject->new();
-    foreach my $method (qw(autoflush sockopt send close connected)) {
+    my $scalar;
+    open(FH, "<", \$scalar);
+    my $mock = Test::MockObject->new(\*FH);
+    $mock->set_isa('IO::Socket');
+    foreach my $method (qw(autoflush sockopt send close connected setsockopt write_Timeout)) {
         $mock->mock($method, (exists $args{$method}) ? $args{$method} : $default_behaviour);
     }
     my @lines = @{$config_lines};

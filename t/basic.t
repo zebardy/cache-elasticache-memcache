@@ -28,9 +28,14 @@ has parent_overrides => (
     is => 'ro',
     default => sub {
         my $self = shift;
-        my $mock = Test::MockObject->new();
+        my $scalar;
+        open(FH, "<", \$scalar);
+        my $mock = Test::MockObject->new(\*FH);
+        $mock->set_isa('IO::Socket');
         $mock->mock('autoflush', sub { return 1 });
         $mock->mock('sockopt', sub { return 1 });
+        $mock->mock('setsockopt', sub { return 1 });
+        $mock->mock('write_Timeout', sub { return 1 });
         $mock->mock('send', sub { return 1 });
         my @lines = @{$self->config_lines};
         $mock->mock('getline', sub { return shift @lines });
