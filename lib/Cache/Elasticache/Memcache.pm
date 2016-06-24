@@ -293,7 +293,7 @@ sub getServersFromEndpoint {
             croak "Unable to connect to server: ".$config_endpoint." - $!" unless $socket;
             $socket->sockopt(SO_KEEPALIVE,1);
             $socket->autoflush(1);
-            IO::Socket::Timeout->enble_timeouts_on($socket);
+            IO::Socket::Timeout->enable_timeouts_on($socket);
             $socket->read_timeout(0.5);
             $socket->write_Timeout(0.5);
         }
