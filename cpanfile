@@ -17,4 +17,5 @@ on test => sub {
     requires 'Test::Deep';
     requires 'Sub::Override';
     requires 'Moo';
+    requires 'Test::Pod';
 };

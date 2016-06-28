@@ -20,6 +20,7 @@ my %WriteMakefileArgs = (
     "Cache::Memcached::Fast" => 0,
     "Carp" => 0,
     "IO::Socket::IP" => 0,
+    "IO::Socket::Timeout" => 0,
     "Try::Tiny" => 0
   },
   "TEST_REQUIRES" => {
@@ -29,9 +30,10 @@ my %WriteMakefileArgs = (
     "Test::Exception" => 0,
     "Test::MockObject" => 0,
     "Test::More" => 0,
+    "Test::Pod" => 0,
     "Test::Routini" => 0
   },
-  "VERSION" => "0.0.3",
+  "VERSION" => "0.0.4",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -42,12 +44,14 @@ my %FallbackPrereqs = (
   "Cache::Memcached::Fast" => 0,
   "Carp" => 0,
   "IO::Socket::IP" => 0,
+  "IO::Socket::Timeout" => 0,
   "Moo" => 0,
   "Sub::Override" => 0,
   "Test::Deep" => 0,
   "Test::Exception" => 0,
   "Test::MockObject" => 0,
   "Test::More" => 0,
+  "Test::Pod" => 0,
   "Test::Routini" => 0,
   "Try::Tiny" => 0
 );
