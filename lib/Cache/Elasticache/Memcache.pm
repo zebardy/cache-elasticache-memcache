@@ -295,7 +295,8 @@ sub getServersFromEndpoint {
             $socket->autoflush(1);
             IO::Socket::Timeout->enable_timeouts_on($socket);
             $socket->read_timeout(0.5);
-            $socket->write_Timeout(0.5);
+# This is currently commented out as it was breaking under perl 5.24 for me. Need to investigate!
+#            $socket->write_Timeout(0.5);
         }
 
         try {
