@@ -54,7 +54,7 @@ use Cache::Memcached::Fast;
 use Try::Tiny;
 use Scalar::Util qw(blessed);
 
-our $VERSION = '0.0.3';
+our $VERSION = '0.0.5';
 
 =pod
 
