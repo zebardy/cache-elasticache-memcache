@@ -9,7 +9,7 @@ use warnings;
 
 =head1 NAME
 
-Cache::Elasticache::Memcache - A wrapper for L<Cache::Memacached::Fast> with support for AWS's auto reconfiguration mechanism
+Cache::Elasticache::Memcache - A wrapper for L<Cache::Memcached::Fast> with support for AWS's auto reconfiguration mechanism
 
 =head1 SYNOPSIS
 
@@ -39,11 +39,11 @@ Cache::Elasticache::Memcache - A wrapper for L<Cache::Memacached::Fast> with sup
 
 =head1 DESCRIPTION
 
-A wrapper for L<Cache::Memacached::Fast> with support for AWS's auto reconfiguration mechanism. It makes use of an AWS elasticache memcached cluster's configuration endpoint to discover the memcache servers in the cluster and periodically check the current server list to adapt to a changing cluster.
+A wrapper for L<Cache::Memcached::Fast> with support for AWS's auto reconfiguration mechanism. It makes use of an AWS elasticache memcached cluster's configuration endpoint to discover the memcached servers in the cluster and periodically check the current server list to adapt to a changing cluster.
 
-=head1 UNDER DEVELOPMENT DISCALIMER
+=head1 UNDER DEVELOPMENT DISCLAIMER
 
-N.B. This module is still under development. It should work, but things may change under the hood. I plan to imporove the resiliance with better timeout handling of communication when updating the server list. I'm toying with the idea of making the server list lookup asyncronus, however that may add a level of complexity not worth the benefits. Also I'm investigating switching to Dist::Milla. I'm open to suggestions, ideas and pull requests.
+N.B. This module is still under development. It should work, but things may change under the hood. I plan to improve the resilience with better timeout handling of communication when updating the server list. I'm toying with the idea of making the server list lookup asyncronous, however that may add a level of complexity not worth the benefits. Also I'm investigating switching to Dist::Milla. I'm open to suggestions, ideas and pull requests.
 
 =cut
 
@@ -89,7 +89,7 @@ sub new {
 
     my $args = (@_ == 1) ? shift : { @_ };  # hashref-ify args
 
-    croak "config_endpoint must be speccified" if (!defined $args->{'config_endpoint'});
+    croak "config_endpoint must be specified" if (!defined $args->{'config_endpoint'});
     croak "servers is not a valid constructors parameter" if (defined $args->{'servers'});
 
     $self->{'config_endpoint'} = delete @{$args}{'config_endpoint'};
@@ -229,7 +229,7 @@ sub checkServers {
 
     $memd->updateServers();
 
-This method will update the server list regardles of how much time has passed since the server list was last checked.
+This method will update the server list regardless of how much time has passed since the server list was last checked.
 
 =cut
 
@@ -370,9 +370,9 @@ L<github issues|https://github.com/zebardy/cache-elasticache-memcache/issues>
 
 =head1 SEE ALSO
 
-L<Cache::Memcached::Fast> - The undelying library used to communicate with memcached servers (apart from autodiscovery)
+L<Cache::Memcached::Fast> - The underlying library used to communicate with memcached servers (apart from autodiscovery)
 
-L<AWS Elasticache Memcached autodiscovery|http://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/AutoDiscovery.html> - AWS's documentation regarding elasticaches's mecached autodiscovery mechanism.
+L<AWS Elasticache Memcached autodiscovery|http://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/AutoDiscovery.html> - AWS's documentation regarding elasticaches's memcached autodiscovery mechanism.
 
 =head1 AUTHOR
 

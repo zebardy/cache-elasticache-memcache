@@ -1,6 +1,6 @@
 # NAME
 
-Cache::Elasticache::Memcache - A wrapper for [Cache::Memacached::Fast](https://metacpan.org/pod/Cache::Memacached::Fast) with support for AWS's auto reconfiguration mechanism
+Cache::Elasticache::Memcache - A wrapper for [Cache::Memcached::Fast](https://metacpan.org/pod/Cache::Memcached::Fast) with support for AWS's auto reconfiguration mechanism
 
 # SYNOPSIS
 
@@ -30,11 +30,11 @@ Cache::Elasticache::Memcache - A wrapper for [Cache::Memacached::Fast](https://m
 
 # DESCRIPTION
 
-A wrapper for [Cache::Memacached::Fast](https://metacpan.org/pod/Cache::Memacached::Fast) with support for AWS's auto reconfiguration mechanism. It makes use of an AWS elasticache memcached cluster's configuration endpoint to discover the memcache servers in the cluster and periodically check the current server list to adapt to a changing cluster.
+A wrapper for [Cache::Memcached::Fast](https://metacpan.org/pod/Cache::Memcached::Fast) with support for AWS's auto reconfiguration mechanism. It makes use of an AWS elasticache memcached cluster's configuration endpoint to discover the memcached servers in the cluster and periodically check the current server list to adapt to a changing cluster.
 
-# UNDER DEVELOPMENT DISCALIMER
+# UNDER DEVELOPMENT DISCLAIMER
 
-N.B. This module is still under development. It should work, but things may change under the hood. I plan to imporove the resiliance with better timeout handling of communication when updating the server list. I'm toying with the idea of making the server list lookup asyncronus, however that may add a level of complexity not worth the benefits. Also I'm investigating switching to Dist::Milla. I'm open to suggestions, ideas and pull requests.
+N.B. This module is still under development. It should work, but things may change under the hood. I plan to improve the resilience with better timeout handling of communication when updating the server list. I'm toying with the idea of making the server list lookup asynchronous, however that may add a level of complexity not worth the benefits. Also I'm investigating switching to Dist::Milla. I'm open to suggestions, ideas and pull requests.
 
 # CONSTRUCTOR
 
@@ -113,7 +113,7 @@ N.B. This module is still under development. It should work, but things may chan
 
         $memd->updateServers();
 
-    This method will update the server list regardles of how much time has passed since the server list was last checked.
+    This method will update the server list regardless of how much time has passed since the server list was last checked.
 
 # CLASS METHODS
 
@@ -129,9 +129,9 @@ N.B. This module is still under development. It should work, but things may chan
 
 # SEE ALSO
 
-[Cache::Memcached::Fast](https://metacpan.org/pod/Cache::Memcached::Fast) - The undelying library used to communicate with memcached servers (apart from autodiscovery)
+[Cache::Memcached::Fast](https://metacpan.org/pod/Cache::Memcached::Fast) - The underlying library used to communicate with memcached servers (apart from autodiscovery)
 
-[AWS Elasticache Memcached autodiscovery](http://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/AutoDiscovery.html) - AWS's documentation regarding elasticaches's mecached autodiscovery mechanism.
+[AWS Elasticache Memcached autodiscovery](http://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/AutoDiscovery.html) - AWS's documentation regarding elasticaches's memcached autodiscovery mechanism.
 
 # AUTHOR
 
