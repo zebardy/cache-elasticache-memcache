@@ -76,7 +76,7 @@ test "update_period defaults to 180 seconds" => sub {
 test "requires config_endpoint" => sub {
     my $self = shift;
     dies_ok { $self->test_class->new( ) };
-    like $@, '/^config_endpoint must be speccified/';
+    like $@, '/^config_endpoint must be specified/';
 };
 
 test "constructor does not accept servers argument" => sub {
