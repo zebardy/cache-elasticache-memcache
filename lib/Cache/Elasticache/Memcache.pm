@@ -54,7 +54,7 @@ use Cache::Memcached::Fast;
 use Try::Tiny;
 use Scalar::Util qw(blessed);
 
-our $VERSION = '0.0.5';
+our $VERSION = '0.0.6';
 
 =pod
 
@@ -98,6 +98,7 @@ sub new {
     $self->{_last_update} = time;
 
     $self->{update_period} = exists $args->{update_period} ? $args->{update_period} : 180;
+    delete @{$args}{'update_period'};
 
     $self->{'_args'} = $args;
     $self->{_memd} = Cache::Memcached::Fast->new($args);
